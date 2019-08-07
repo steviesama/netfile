@@ -4,7 +4,7 @@ A Go CLI project, currently targeting Linux, that allows a file server to be dep
 
 ## Dependencies
 
-This project depends on a couple of things on the surface; one of which being development further is the reason for this project to exist.
+This project depends on a couple of things on the surface; one of which being further development of one of the dependencies which is the reason for this project to exist.
 
 ### [github.com/steviesama/nx/service/netfile](https://github.com/steviesama/nx/blob/master/service/netfile)
 
@@ -12,7 +12,7 @@ This package is the runtime code that this project uses to connect the cli actio
 
 ### [github.com/spf13/cobra](https://github.com/spf13/cobra)
 
-This package is used after installing the cobra binary to generate the boilerplate for this cli command system as well as programmatically to in the project.
+This package is used after installing the cobra binary to generate the boilerplate for the cli command system as well as used programmatically in the project to power the cli command system.
 
 ### [github.com/spf13/viper](github.com/spf13/viper)
 
