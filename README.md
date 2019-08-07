@@ -2,6 +2,22 @@
 
 A Go CLI project, currently targeting Linux, that allows a file server to be deployed on any given machine which also houses sub commands for it to act as the client to connect to the server instance to make file requests.
 
+## Dependencies
+
+This project depends on a couple of things on the surface; one of which being development further is the reason for this project to exist.
+
+### [github.com/steviesama/nx/service/netfile](https://github.com/steviesama/nx/blob/master/service/netfile)
+
+This package is the runtime code that this project uses to connect the cli actions to what the package facilitates programmatically. The project will likely end up up leveraging a handful of other packages in the base namespace.
+
+### [github.com/spf13/cobra](https://github.com/spf13/cobra)
+
+This package is used after installing the cobra binary to generate the boilerplate for this cli command system as well as programmatically to in the project.
+
+### [github.com/spf13/viper](github.com/spf13/viper)
+
+Cobra depends on this package to manage it's configuration files when and if they are used with a project. This is included because it will be what this project uses to manage it's configuration as well.
+
 ## Current State
 
 It's a work in progress...currently trying to get the basic stuff like `netfile server --port x`, `netfile fetch --host addr --port x`, & `netfile store --host addr --port x` working with a solid communication protocol.
@@ -49,6 +65,13 @@ Ultimately, this tool is going to be used to allow file backup mapping as well a
 
 Other than obviously the server and client file storage and fetching functionality, config files...and the ability for the user to either be able to specify the config manually or to set varous config settings via a `netfile config` command and various flags would be one of the next features.
 
-The ability to authenticate the user as well and connect via TLS via JSON Web Tokens will be an eventual feature.
 
-May add Windows support in the future...but it is low priority as it can already be used via Windows Subsystem for Linux.
+
+as well and connect via TLS via JSON Web 
+
+
+
+
+...but it is low priority as it can 
+ for Linux.
+
