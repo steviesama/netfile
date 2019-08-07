@@ -36,6 +36,8 @@ There is really only the `cmd` package...at:
 
 ## Commands
 
+In the `cmd` package folder, each of these commands has a corresponding go file named after it...with the exception of the base command `netfile` which is represented by `root.go`.
+
 ```bash
 netfile server [--port x]
 ```
