@@ -65,13 +65,6 @@ Ultimately, this tool is going to be used to allow file backup mapping as well a
 
 Other than obviously the server and client file storage and fetching functionality, config files...and the ability for the user to either be able to specify the config manually or to set varous config settings via a `netfile config` command and various flags would be one of the next features.
 
+The ability to authenticate the user as well and connect via TLS via JSON Web Tokens will be an eventual feature.
 
-
-as well and connect via TLS via JSON Web 
-
-
-
-
-...but it is low priority as it can 
- for Linux.
-
+May add Windows support in the future...but it is low priority as it can already be used via Windows Subsystem for Linux.
