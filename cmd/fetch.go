@@ -16,6 +16,8 @@ limitations under the License.
 package cmd
 
 import (
+	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -23,6 +25,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/cheggaaa/pb/v3"
 	"github.com/spf13/cobra"
 	"github.com/steviesama/nx/service/netfile"
 )
@@ -32,7 +35,7 @@ var fetchCmd = &cobra.Command{
 	Use:   "fetch",
 	Short: "netfile fetch requests a file transfer.",
 	Long:  `netfile fetch requests a file transfer from the provided netfile server connection.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(cmd *cobra.Command, args []string) (RunError error) {
 		host, hostErr := cmd.Flags().GetString("host")
 		if hostErr != nil {
 			return errors.New(fmt.Sprintf("netfile fetch --host error: %s\n", hostErr.Error()))
@@ -78,7 +81,6 @@ var fetchCmd = &cobra.Command{
 				_ = netfile.SendMsg(server, "client.fetch")
 				// Send expected command param
 				_ = netfile.SendMsg(server, filepath)
-				return nil
 			case "server.fetch.file":
 				file, createErr := os.Create(fmt.Sprintf("%s.tmp", filepath))
 				defer file.Close()
@@ -91,9 +93,31 @@ var fetchCmd = &cobra.Command{
 				filesize, _ = strconv.ParseInt(msg, 10, 64)
 				rw := netfile.NewConnReadWriter(server)
 
+				data := make([]byte, netfile.BufferSize)
+				fileWriter := bufio.NewWriter(file)
+				bar := pb.Full.Start64(filesize)
+				barReader := bar.NewProxyReader(rw)
 				for {
-					rw.Read(file)
+					n, readErr := barReader.Read(data)
+					// Track bytes copied so far
+					// TODO: May need to remove this...proxy reader seems to handle it.
+					bytesCopied += int64(n)
+					// Blank assignment to signal return values are being ignored.
+					numBytes, writeErr := io.CopyN(fileWriter, bytes.NewReader(data), int64(n))
+
+					if readErr != nil {
+						fmt.Printf("numBytes: %d;\nreadErr: %+v\nwriteErr: %+v\n", numBytes, readErr, writeErr)
+						if readErr != io.EOF {
+							RunError = errors.New(fmt.Sprintf("fetchCmd: netfile fetch file read error: %s\n", readErr.Error()))
+						}
+						goto ExitFor
+					}
 				}
+				// break inside the for seems to be breaking completely out of the switch instead...
+			ExitFor:
+				_ = os.Rename(fmt.Sprintf("%s.tmp", filepath), filepath)
+				bar.Finish()
+				_ = netfile.SendMsg(server, "client.quit")
 			case "server.fetch.nofile":
 				// Might not need this.
 				_ = netfile.SendMsg(server, "client.quit")
@@ -107,7 +131,7 @@ var fetchCmd = &cobra.Command{
 
 		}
 
-		return nil
+		return RunError
 	},
 }
 

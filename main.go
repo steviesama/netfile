@@ -15,8 +15,14 @@ limitations under the License.
 */
 package main
 
-import "netfile/cmd"
+import (
+	"netfile/cmd"
+)
+
+func init() {
+	// runtime.GOMAXPROCS(runtime.NumCPU())
+}
 
 func main() {
-  cmd.Execute()
+	cmd.Execute()
 }
